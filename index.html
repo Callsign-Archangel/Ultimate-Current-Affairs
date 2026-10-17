@@ -80,6 +80,66 @@
         .blur-answer:hover {
             filter: blur(3px);
         }
+        /* ===== Header: Upload/Manage/Backup/Sync hub button ===== */
+        .hub-btn { position: relative; overflow: hidden; }
+        .hub-btn::after {
+            content: ''; position: absolute; top: 0; left: -60%; width: 40%; height: 100%;
+            background: linear-gradient(100deg, transparent, rgba(255,255,255,.35), transparent);
+            transform: skewX(-20deg); animation: hubSheen 3.6s ease-in-out infinite; pointer-events: none;
+        }
+        @keyframes hubSheen { 0% { left: -60%; } 55%, 100% { left: 130%; } }
+        .hub-btn { animation: hubGlow 3s ease-in-out infinite; }
+        @keyframes hubGlow {
+            0%, 100% { box-shadow: 0 0 0 0 rgba(139,92,246,.0), 0 4px 14px rgba(99,102,241,.35); }
+            50% { box-shadow: 0 0 0 4px rgba(139,92,246,.18), 0 6px 22px rgba(139,92,246,.55); }
+        }
+        .hub-sync-arrows { transform-box: fill-box; transform-origin: center; animation: hubSpin 4s linear infinite; }
+        @keyframes hubSpin { to { transform: rotate(360deg); } }
+
+        /* ===== Header: animated theme switch button ===== */
+        .theme-btn {
+            position: relative; overflow: hidden; display: flex; align-items: center; gap: .5rem;
+            padding: .5rem .9rem; border-radius: .85rem; font-weight: 700; font-size: .78rem;
+            white-space: nowrap; transition: transform .15s ease, filter .2s ease; cursor: pointer;
+        }
+        .theme-btn:hover { transform: translateY(-1px) scale(1.03); }
+        .theme-btn:active { transform: scale(.95); }
+        .theme-btn::after {
+            content: ''; position: absolute; top: 0; left: -60%; width: 35%; height: 100%;
+            transform: skewX(-20deg); animation: hubSheen 4.2s ease-in-out infinite; pointer-events: none;
+        }
+        .theme-btn.to-white {
+            background: linear-gradient(135deg, #ffffff, #e6ecfb); color: #0f172a;
+            border: 1px solid rgba(255,255,255,.95); animation: glowWhitePulse 2.4s ease-in-out infinite;
+        }
+        .theme-btn.to-white::after { background: linear-gradient(100deg, transparent, rgba(99,102,241,.22), transparent); }
+        .theme-btn.to-white i { color: #f59e0b; animation: sunSpin 9s linear infinite; }
+        .theme-btn.to-black {
+            background: linear-gradient(135deg, #0b1020, #1e293b); color: #ffffff;
+            border: 1px solid #334155; animation: glowBlackPulse 2.4s ease-in-out infinite;
+        }
+        .theme-btn.to-black::after { background: linear-gradient(100deg, transparent, rgba(255,255,255,.18), transparent); }
+        .theme-btn.to-black i { color: #fde68a; animation: moonSway 3s ease-in-out infinite; }
+        @keyframes sunSpin { to { transform: rotate(360deg); } }
+        @keyframes moonSway { 0%, 100% { transform: rotate(-12deg) scale(1); } 50% { transform: rotate(12deg) scale(1.12); } }
+        @keyframes glowWhitePulse {
+            0%, 100% { box-shadow: 0 0 6px 1px rgba(255,255,255,.55), 0 0 18px 4px rgba(255,255,255,.25); }
+            50% { box-shadow: 0 0 12px 3px rgba(255,255,255,.9), 0 0 36px 10px rgba(255,255,255,.4); }
+        }
+        @keyframes glowBlackPulse {
+            0%, 100% { box-shadow: 0 0 6px 1px rgba(2,6,23,.55), 0 0 16px 3px rgba(2,6,23,.35); }
+            50% { box-shadow: 0 0 12px 3px rgba(2,6,23,.85), 0 0 30px 8px rgba(2,6,23,.5); }
+        }
+
+        /* ===== Glow for year / month cards that contain questions ===== */
+        .glow-card { animation: cardGlow 2.6s ease-in-out infinite; border-color: rgba(129,140,248,.85) !important; }
+        @keyframes cardGlow {
+            0%, 100% { box-shadow: 0 0 8px 1px rgba(99,102,241,.45), 0 0 20px 3px rgba(16,185,129,.22); }
+            50% { box-shadow: 0 0 16px 4px rgba(99,102,241,.8), 0 0 38px 10px rgba(16,185,129,.4); }
+        }
+
+        /* ===== Notes ===== */
+        .note-sticky { white-space: pre-wrap; word-break: break-word; }
     </style>
 </head>
 <body class="bg-slate-50 text-slate-900 dark:bg-slate-950 dark:text-slate-100 min-h-screen flex flex-col transition-colors duration-200">
@@ -132,15 +192,29 @@
                         <span id="headerBookmarkCount" class="px-1.5 py-0.2 rounded-md bg-amber-200/80 dark:bg-amber-800/80 text-amber-900 dark:text-amber-100 font-bold">0</span>
                     </button>
 
-                    <!-- Upload / .py Data Hub Button -->
-                    <button onclick="openUploadModal()" class="flex items-center gap-2 px-3.5 py-2 rounded-xl bg-gradient-to-r from-indigo-600 to-violet-600 hover:from-indigo-500 hover:to-violet-500 text-white font-semibold text-xs sm:text-sm shadow-md shadow-indigo-500/20 transition-all active:scale-95">
-                        <i class="fa-solid fa-file-excel"></i>
-                        <span>Upload / <code class="font-mono text-xs bg-white/20 px-1 rounded">.py</code> Sync</span>
+                    <!-- Upload / Manage / Backup / Sync Hub Button -->
+                    <button onclick="openUploadModal()" class="hub-btn flex items-center gap-2 px-3.5 py-2 rounded-xl bg-gradient-to-r from-indigo-600 to-violet-600 hover:from-indigo-500 hover:to-violet-500 text-white font-semibold text-xs sm:text-sm transition-all active:scale-95" title="Upload, manage, backup & sync your question database">
+                        <span class="w-6 h-6 rounded-lg bg-white/20 flex items-center justify-center shrink-0">
+                            <svg viewBox="0 0 24 24" class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                                <ellipse cx="9.5" cy="5" rx="6" ry="2.4"></ellipse>
+                                <path d="M3.5 5v5.2c0 1.3 2.7 2.4 6 2.4"></path>
+                                <path d="M15.5 5v2.6"></path>
+                                <path d="M3.5 10.2v5.2c0 1.3 2.7 2.4 6 2.4"></path>
+                                <g class="hub-sync-arrows">
+                                    <path d="M21 16.5a4 4 0 0 0-6.9-2.1"></path>
+                                    <path d="M14.1 12.2v2.5h2.5"></path>
+                                    <path d="M13 17.5a4 4 0 0 0 6.9 2.1"></path>
+                                    <path d="M19.9 21.8v-2.5h-2.5"></path>
+                                </g>
+                            </svg>
+                        </span>
+                        <span class="whitespace-nowrap hidden sm:inline">Upload/Manage/Backup/Sync</span>
                     </button>
 
-                    <!-- Theme Toggle -->
-                    <button onclick="toggleTheme()" class="w-9 h-9 rounded-xl bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 flex items-center justify-center text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-slate-700 transition-all" title="Toggle Dark/Light Theme">
-                        <i id="themeIcon" class="fa-solid fa-sun text-amber-400"></i>
+                    <!-- Theme Toggle (animated glow pill) -->
+                    <button id="themeToggleBtn" onclick="toggleTheme()" class="theme-btn to-white" title="Toggle Dark/Light Theme">
+                        <i id="themeIcon" class="fa-solid fa-sun"></i>
+                        <span id="themeBtnText" class="hidden sm:inline">Switch to White Theme</span>
                     </button>
                 </div>
             </div>
@@ -568,9 +642,14 @@
                                 </span>
                             </div>
 
-                            <button id="quizBookmarkBtn" onclick="toggleCurrentQuizQuestionBookmark()" class="px-3 py-1 rounded-lg border border-slate-200 dark:border-slate-700 text-xs font-semibold flex items-center gap-1.5 hover:bg-slate-100 dark:hover:bg-slate-800 transition-all" title="Shortcut: Press 'B'">
+                            <div class="flex items-center gap-2">
+                                <button id="quizMarkBtn" onclick="toggleMarkForReview(false)" class="px-3 py-1 rounded-lg border border-slate-200 dark:border-slate-700 text-xs font-semibold flex items-center gap-1.5 hover:bg-fuchsia-50 dark:hover:bg-fuchsia-950/40 transition-all" title="Shortcut: Press 'M'">
+                                    <i class="fa-regular fa-flag"></i> <span>Mark for Review</span>
+                                </button>
+                                <button id="quizBookmarkBtn" onclick="toggleCurrentQuizQuestionBookmark()" class="px-3 py-1 rounded-lg border border-slate-200 dark:border-slate-700 text-xs font-semibold flex items-center gap-1.5 hover:bg-slate-100 dark:hover:bg-slate-800 transition-all" title="Shortcut: Press 'B'">
                                 <i class="fa-regular fa-bookmark"></i> <span>Save</span>
                             </button>
+                            </div>
                         </div>
 
                         <!-- Question Statement -->
@@ -591,16 +670,23 @@
                             </div>
                             <p id="quizExplanationText" class="text-xs sm:text-sm text-slate-700 dark:text-slate-300 leading-relaxed"></p>
                         </div>
+
+                        <!-- Personal Notes (below explanation) -->
+                        <div id="quizNotesBox" class="hidden"></div>
                     </div>
 
                     <!-- Bottom Navigation Row -->
-                    <div class="pt-5 border-t border-slate-200 dark:border-slate-800 flex items-center justify-between gap-3">
+                    <div class="pt-5 border-t border-slate-200 dark:border-slate-800 flex flex-wrap items-center justify-between gap-3">
                         <button id="quizPrevBtn" onclick="navigateQuizQuestion(-1)" class="px-4 py-2.5 rounded-xl bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 font-semibold text-xs sm:text-sm flex items-center gap-2 transition-all disabled:opacity-40">
                             <i class="fa-solid fa-chevron-left"></i> Previous
                         </button>
 
-                        <span class="hidden sm:inline text-[11px] text-slate-400 font-medium">
-                            Shortcuts: <kbd class="px-1.5 py-0.5 rounded bg-slate-100 dark:bg-slate-800 border border-slate-300 dark:border-slate-700">A-D</kbd> Option • <kbd class="px-1.5 py-0.5 rounded bg-slate-100 dark:bg-slate-800 border border-slate-300 dark:border-slate-700">→</kbd> Next
+                        <button onclick="toggleMarkForReview(true)" class="px-4 py-2.5 rounded-xl bg-fuchsia-50 hover:bg-fuchsia-100 dark:bg-fuchsia-950/40 dark:hover:bg-fuchsia-900/50 text-fuchsia-700 dark:text-fuchsia-300 border border-fuchsia-300/70 dark:border-fuchsia-800 font-semibold text-xs sm:text-sm flex items-center gap-2 transition-all">
+                            <i class="fa-solid fa-flag"></i> <span>Mark for Review &amp; Next</span>
+                        </button>
+
+                        <span class="hidden xl:inline text-[11px] text-slate-400 font-medium">
+                            Shortcuts: <kbd class="px-1.5 py-0.5 rounded bg-slate-100 dark:bg-slate-800 border border-slate-300 dark:border-slate-700">A-D</kbd> Option • <kbd class="px-1.5 py-0.5 rounded bg-slate-100 dark:bg-slate-800 border border-slate-300 dark:border-slate-700">→</kbd> Next • <kbd class="px-1.5 py-0.5 rounded bg-slate-100 dark:bg-slate-800 border border-slate-300 dark:border-slate-700">M</kbd> Mark
                         </span>
 
                         <button id="quizNextBtn" onclick="navigateQuizQuestion(1)" class="px-5 py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white font-semibold text-xs sm:text-sm flex items-center gap-2 shadow transition-all">
@@ -626,6 +712,8 @@
                         <div class="grid grid-cols-2 gap-2 pt-3 border-t border-slate-200 dark:border-slate-800 text-[11px] text-slate-500 dark:text-slate-400">
                             <div class="flex items-center gap-2"><span class="w-3 h-3 rounded bg-emerald-500 inline-block"></span> Correct / Answered</div>
                             <div class="flex items-center gap-2"><span class="w-3 h-3 rounded bg-rose-500 inline-block"></span> Incorrect</div>
+                            <div class="flex items-center gap-2"><span class="w-3 h-3 rounded bg-yellow-400 inline-block"></span> Skipped / Not answered</div>
+                            <div class="flex items-center gap-2"><span class="relative w-3 h-3 rounded bg-fuchsia-500 inline-block"><i class="fa-solid fa-flag absolute -top-1.5 -right-1.5 text-[7px] text-fuchsia-700 dark:text-fuchsia-200"></i></span> Marked for Review</div>
                             <div class="flex items-center gap-2"><span class="w-3 h-3 rounded bg-indigo-600 inline-block"></span> Current Question</div>
                             <div class="flex items-center gap-2"><span class="w-3 h-3 rounded bg-slate-200 dark:bg-slate-800 inline-block"></span> Unvisited</div>
                         </div>
@@ -740,8 +828,8 @@
                         <i class="fa-solid fa-file-excel"></i>
                     </div>
                     <div>
-                        <h3 class="font-extrabold text-base sm:text-lg">Question Data Upload & Python (<code class="font-mono text-indigo-500">.py</code>) Sync Hub</h3>
-                        <p class="text-xs text-slate-500 dark:text-slate-400">Append daily questions via Excel/CSV, direct copy-paste, or Python automation</p>
+                        <h3 class="font-extrabold text-base sm:text-lg">Upload, Manage, Backup &amp; Sync Hub</h3>
+                        <p class="text-xs text-slate-500 dark:text-slate-400">Add, delete, back up and sync daily questions via Excel/CSV, copy-paste, cloud or Python</p>
                     </div>
                 </div>
                 <button onclick="closeUploadModal()" class="w-9 h-9 rounded-xl bg-slate-200/70 hover:bg-slate-300 dark:bg-slate-800 dark:hover:bg-slate-700 flex items-center justify-center text-slate-500 dark:text-slate-300">
@@ -765,6 +853,9 @@
                 </button>
                 <button id="tabBtnManage" onclick="switchUploadTab('manage')" class="shrink-0 px-4 py-2.5 text-xs sm:text-sm font-bold border-b-2 border-transparent text-slate-500 hover:text-slate-800 dark:hover:text-slate-200 whitespace-nowrap flex items-center gap-2">
                     <i class="fa-solid fa-database"></i> 5. Backup / Export DB
+                </button>
+                <button id="tabBtnDelete" onclick="switchUploadTab('delete')" class="shrink-0 px-4 py-2.5 text-xs sm:text-sm font-bold border-b-2 border-transparent text-slate-500 hover:text-slate-800 dark:hover:text-slate-200 whitespace-nowrap flex items-center gap-2">
+                    <i class="fa-solid fa-trash-can text-rose-500"></i> 6. Delete Questions
                 </button>
             </div>
 
@@ -1054,7 +1145,53 @@
                     </div>
                 </div>
 
+                <!-- TAB 6: DELETE QUESTIONS BY YEAR / MONTH / DAY -->
+                <div id="uploadTabDelete" class="hidden space-y-4">
+                    <div class="p-4 rounded-2xl bg-rose-50 dark:bg-rose-950/30 border border-rose-200 dark:border-rose-900/60 flex gap-3">
+                        <i class="fa-solid fa-triangle-exclamation text-rose-500 mt-0.5"></i>
+                        <p class="text-xs text-slate-700 dark:text-slate-300 leading-relaxed">
+                            <strong class="text-rose-600 dark:text-rose-400">Delete questions by date.</strong>
+                            Choose a year, and optionally a month and a day. Nothing is removed yet &mdash; you will first see a full warning with every affected question and an option to back them up.
+                        </p>
+                    </div>
+
+                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                        <div>
+                            <label class="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wide">Year</label>
+                            <select id="delYear" onchange="onDeleteScopeChange()" class="w-full mt-1 px-3 py-2 rounded-xl bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-xs font-bold"></select>
+                        </div>
+                        <div>
+                            <label class="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wide">Month</label>
+                            <select id="delMonth" onchange="onDeleteMonthChange()" class="w-full mt-1 px-3 py-2 rounded-xl bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-xs font-bold"></select>
+                        </div>
+                        <div>
+                            <label class="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wide">Day</label>
+                            <select id="delDay" onchange="onDeleteScopeChange()" class="w-full mt-1 px-3 py-2 rounded-xl bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-xs font-bold disabled:opacity-50"></select>
+                        </div>
+                    </div>
+
+                    <div id="delPreviewBox" class="p-4 rounded-2xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700 space-y-2"></div>
+
+                    <button id="delReviewBtn" onclick="openDeleteConfirm()" class="w-full sm:w-auto px-5 py-2.5 rounded-xl bg-rose-600 hover:bg-rose-500 text-white font-bold text-xs shadow transition-all disabled:opacity-40 disabled:cursor-not-allowed flex items-center justify-center gap-2">
+                        <i class="fa-solid fa-trash-can"></i> <span>Review &amp; Delete&hellip;</span>
+                    </button>
+                </div>
+
             </div>
+        </div>
+    </div>
+
+    <!-- ==================== DELETE CONFIRMATION (WARNING) MODAL ==================== -->
+    <div id="deleteConfirmModal" class="fixed inset-0 z-[70] hidden bg-slate-950/85 backdrop-blur-sm flex items-center justify-center p-3 sm:p-6 overflow-y-auto">
+        <div class="bg-white dark:bg-slate-900 border-2 border-rose-500/60 rounded-3xl max-w-2xl w-full overflow-hidden shadow-2xl my-auto flex flex-col max-h-[94vh]">
+            <div class="shrink-0 px-6 py-4 bg-rose-600 text-white flex items-center gap-3">
+                <div class="w-10 h-10 rounded-xl bg-white/20 flex items-center justify-center text-lg"><i class="fa-solid fa-triangle-exclamation"></i></div>
+                <div>
+                    <h3 class="font-extrabold text-base sm:text-lg">Permanent Deletion Warning</h3>
+                    <p class="text-xs text-rose-100">This cannot be undone. Review everything below before continuing.</p>
+                </div>
+            </div>
+            <div id="deleteConfirmBody" class="p-5 sm:p-6 overflow-y-auto space-y-4 flex-1 min-h-0"></div>
         </div>
     </div>
 
@@ -1100,7 +1237,9 @@
             SCORES: 'ca_portal_user_scores_v2',
             LAST_ROUTE: 'ca_portal_last_route_v2',
             CLOUD_URL: 'ca_portal_cloud_db_url_v2',
-            CLOUD_KEY: 'ca_portal_cloud_api_key_v2'
+            CLOUD_KEY: 'ca_portal_cloud_api_key_v2',
+            NOTES: 'ca_portal_user_notes_v2',
+            DELETED: 'ca_portal_deleted_sigs_v2'
         };
 
         // Clean up any legacy pre-populated sample database keys if present
@@ -1122,6 +1261,9 @@
             bookmarkedIds: new Set(),
             dayBestScores: {}, // key: "2026-0-15" -> { score: 4, total: 4 }
             revealedAnswerIds: new Set(),
+            notes: {}, // questionId -> { text, updated }
+            noteEditing: new Set(),
+            deletedSigs: new Set(), // signatures of deliberately deleted questions (stops cloud merge from restoring them)
             isHandlingPopState: false,
 
             // Cloud Sync State
@@ -1147,7 +1289,9 @@
                 userAnswers: {},
                 timerSeconds: 0,
                 timerInterval: null,
-                isFinished: false
+                isFinished: false,
+                markedForReview: new Set(),
+                visited: new Set()
             }
         };
 
@@ -1179,6 +1323,16 @@
                     const parsedScores = JSON.parse(savedScores);
                     if (parsedScores && typeof parsedScores === 'object') appState.dayBestScores = parsedScores;
                 }
+                const savedNotes = localStorage.getItem(STORAGE_KEYS.NOTES);
+                if (savedNotes) {
+                    const parsedNotes = JSON.parse(savedNotes);
+                    if (parsedNotes && typeof parsedNotes === 'object') appState.notes = parsedNotes;
+                }
+                const savedDeleted = localStorage.getItem(STORAGE_KEYS.DELETED);
+                if (savedDeleted) {
+                    const parsedDel = JSON.parse(savedDeleted);
+                    if (Array.isArray(parsedDel)) appState.deletedSigs = new Set(parsedDel);
+                }
                 // Load Cloud Sync URL (saved custom URL or default pre-filled Firebase URL)
                 const savedCloudUrl = localStorage.getItem(STORAGE_KEYS.CLOUD_URL);
                 const savedCloudKey = localStorage.getItem(STORAGE_KEYS.CLOUD_KEY);
@@ -1202,6 +1356,8 @@
                 localStorage.setItem(STORAGE_KEYS.QUESTIONS, JSON.stringify(appState.questions));
                 localStorage.setItem(STORAGE_KEYS.BOOKMARKS, JSON.stringify(Array.from(appState.bookmarkedIds)));
                 localStorage.setItem(STORAGE_KEYS.SCORES, JSON.stringify(appState.dayBestScores));
+                localStorage.setItem(STORAGE_KEYS.NOTES, JSON.stringify(appState.notes));
+                localStorage.setItem(STORAGE_KEYS.DELETED, JSON.stringify(Array.from(appState.deletedSigs)));
             } catch (err) {
                 console.warn("Storage save warning:", err);
             }
@@ -1265,20 +1421,25 @@
             }
         }
 
+        function qSig(q) {
+            return `${q.year}-${q.month}-${q.day}-${String(q.question || '').trim().toLowerCase()}`;
+        }
+
         function mergeQuestionLists(localList, remoteList) {
             const mergedMap = new Map();
-            const makeSig = (q) => `${q.year}-${q.month}-${q.day}-${String(q.question || '').trim().toLowerCase()}`;
+            const makeSig = qSig;
+            const isDeleted = (q) => appState.deletedSigs.has(makeSig(q));
 
             // Put remote questions first so cloud IDs are preserved
             (Array.isArray(remoteList) ? remoteList : []).forEach(q => {
-                if (q && q.question) {
+                if (q && q.question && !isDeleted(q)) {
                     mergedMap.set(makeSig(q), q);
                 }
             });
 
             // Merge any local questions not yet in remote
             (Array.isArray(localList) ? localList : []).forEach(q => {
-                if (q && q.question) {
+                if (q && q.question && !isDeleted(q)) {
                     const sig = makeSig(q);
                     if (!mergedMap.has(sig)) {
                         mergedMap.set(sig, q);
@@ -1360,7 +1521,7 @@
                 updateCloudStatusUI('connected');
 
                 // If local had more questions than remote, push the merged superset back to cloud automatically
-                if (merged.length > remoteQuestions.length) {
+                if (merged.length !== remoteQuestions.length) {
                     await pushQuestionsToCloud(true);
                 } else if (!silent) {
                     showToast(`Synced with Cloud! Total: ${merged.length} questions.`, 'success');
@@ -1842,6 +2003,7 @@ if __name__ == "__main__":
         // --- INITIALIZATION ---
         window.addEventListener('DOMContentLoaded', async () => {
             loadPersistentData();
+            applyThemeButton();
             initQuickSwitchers();
             updateGlobalHeaderStats();
             setupKeyboardShortcuts();
@@ -1899,16 +2061,26 @@ if __name__ == "__main__":
         });
 
         // --- THEME TOGGLE ---
-        function toggleTheme() {
-            const htmlEl = document.documentElement;
+        function applyThemeButton() {
+            const isDark = document.documentElement.classList.contains('dark');
+            const btn = document.getElementById('themeToggleBtn');
             const icon = document.getElementById('themeIcon');
-            if (htmlEl.classList.contains('dark')) {
-                htmlEl.classList.remove('dark');
-                icon.className = 'fa-solid fa-moon text-slate-700';
+            const text = document.getElementById('themeBtnText');
+            if (!btn) return;
+            if (isDark) {
+                btn.className = 'theme-btn to-white';
+                icon.className = 'fa-solid fa-sun';
+                text.textContent = 'Switch to White Theme';
             } else {
-                htmlEl.classList.add('dark');
-                icon.className = 'fa-solid fa-sun text-amber-400';
+                btn.className = 'theme-btn to-black';
+                icon.className = 'fa-solid fa-moon';
+                text.textContent = 'Switch to Black Theme';
             }
+        }
+
+        function toggleTheme() {
+            document.documentElement.classList.toggle('dark');
+            applyThemeButton();
         }
 
         // --- TOAST NOTIFICATIONS ---
@@ -2070,7 +2242,7 @@ if __name__ == "__main__":
                 const hasData = yearQs.length > 0;
 
                 return `
-                <div onclick="navigateToMonths(${year})" class="card-hover cursor-pointer group relative overflow-hidden rounded-3xl bg-white dark:bg-slate-900 border-2 ${hasData ? 'border-indigo-500/40 dark:border-indigo-500/40' : 'border-slate-200 dark:border-slate-800'} p-6 shadow-sm flex flex-col justify-between">
+                <div onclick="navigateToMonths(${year})" class="card-hover cursor-pointer group relative overflow-hidden rounded-3xl bg-white dark:bg-slate-900 border-2 ${hasData ? 'glow-card' : 'border-slate-200 dark:border-slate-800'} p-6 shadow-sm flex flex-col justify-between">
                     <div class="absolute top-0 right-0 w-28 h-28 bg-gradient-to-br ${theme.from} ${theme.to} opacity-10 rounded-bl-full pointer-events-none group-hover:scale-125 transition-transform"></div>
                     
                     <div class="space-y-4">
@@ -2186,7 +2358,7 @@ if __name__ == "__main__":
                 const hasData = monthQs.length > 0;
 
                 return `
-                <div onclick="openMonthHub(${year}, ${monthIdx}, 'revise')" class="card-hover cursor-pointer rounded-2xl bg-white dark:bg-slate-900 border-2 ${hasData ? 'border-indigo-500/40 dark:border-indigo-500/40' : 'border-slate-200 dark:border-slate-800'} p-5 shadow-sm flex flex-col justify-between space-y-4">
+                <div onclick="openMonthHub(${year}, ${monthIdx}, 'revise')" class="card-hover cursor-pointer rounded-2xl bg-white dark:bg-slate-900 border-2 ${hasData ? 'glow-card' : 'border-slate-200 dark:border-slate-800'} p-5 shadow-sm flex flex-col justify-between space-y-4">
                     <div class="flex items-start justify-between">
                         <div>
                             <span class="text-[11px] font-bold uppercase tracking-wider text-slate-400">Month ${String(monthIdx + 1).padStart(2, '0')}</span>
@@ -2396,6 +2568,7 @@ if __name__ == "__main__":
                                     <span>Correct Answer: Option ${correctLetter} — ${correctText}</span>
                                 </div>
                                 ${q.explanation ? `<p class="text-xs text-slate-600 dark:text-slate-300 leading-relaxed pt-1"><strong class="text-slate-800 dark:text-slate-200">Explanation:</strong> ${q.explanation}</p>` : ''}
+                                ${noteBlockHTML(q.id, 'revise')}
                             </div>
                         `}
                     </div>
@@ -2568,8 +2741,12 @@ if __name__ == "__main__":
                 userAnswers: {},
                 timerSeconds: 0,
                 timerInterval: null,
-                isFinished: false
+                isFinished: false,
+                markedForReview: new Set(),
+                visited: new Set()
             };
+            const nb = document.getElementById('quizNotesBox');
+            if (nb) { nb.classList.add('hidden'); nb.dataset.qid = ''; }
 
             document.getElementById('quizHeaderTitle').textContent = title;
             document.getElementById('quizHeaderSubtitle').textContent = subtitle;
@@ -2631,6 +2808,18 @@ if __name__ == "__main__":
                 ? `<i class="fa-solid fa-bookmark text-amber-500"></i> <span class="text-amber-600 dark:text-amber-400">Saved</span>`
                 : `<i class="fa-regular fa-bookmark"></i> <span>Save</span>`;
 
+            // Mark-for-review state
+            const markBtn = document.getElementById('quizMarkBtn');
+            if (markBtn) {
+                const isMarked = qObj.markedForReview.has(qObj.currentIndex);
+                markBtn.className = isMarked
+                    ? "px-3 py-1 rounded-lg border border-fuchsia-400 bg-fuchsia-50 dark:bg-fuchsia-950/50 text-fuchsia-700 dark:text-fuchsia-300 text-xs font-bold flex items-center gap-1.5 transition-all"
+                    : "px-3 py-1 rounded-lg border border-slate-200 dark:border-slate-700 text-xs font-semibold flex items-center gap-1.5 hover:bg-fuchsia-50 dark:hover:bg-fuchsia-950/40 transition-all";
+                markBtn.innerHTML = isMarked
+                    ? `<i class="fa-solid fa-flag"></i> <span>Marked</span>`
+                    : `<i class="fa-regular fa-flag"></i> <span>Mark for Review</span>`;
+            }
+
             // Options
             const chosenIdx = qObj.userAnswers[qObj.currentIndex];
             const hasAnswered = chosenIdx !== undefined;
@@ -2679,6 +2868,19 @@ if __name__ == "__main__":
                 expBox.classList.add('hidden');
             }
 
+            // Personal notes (below explanation); only rebuilt when the question changes so typing isn't lost
+            const notesBox = document.getElementById('quizNotesBox');
+            if (showFeedbackNow) {
+                if (notesBox.classList.contains('hidden') || notesBox.dataset.qid !== currentQ.id) {
+                    notesBox.innerHTML = noteBlockHTML(currentQ.id, 'quiz');
+                    notesBox.dataset.qid = currentQ.id;
+                }
+                notesBox.classList.remove('hidden');
+            } else {
+                notesBox.classList.add('hidden');
+                notesBox.dataset.qid = '';
+            }
+
             // Prev / Next buttons
             document.getElementById('quizPrevBtn').disabled = qObj.currentIndex === 0;
             const nextBtn = document.getElementById('quizNextBtn');
@@ -2709,29 +2911,56 @@ if __name__ == "__main__":
             const qObj = appState.quiz;
             const nextIdx = qObj.currentIndex + delta;
             if (nextIdx >= qObj.questions.length) {
+                qObj.visited.add(qObj.currentIndex);
                 finishAndEvaluateQuiz();
                 return;
             }
             if (nextIdx >= 0 && nextIdx < qObj.questions.length) {
+                qObj.visited.add(qObj.currentIndex);
                 qObj.currentIndex = nextIdx;
                 renderCurrentQuizQuestion();
             }
         }
 
         function jumpToQuizQuestion(index) {
+            appState.quiz.visited.add(appState.quiz.currentIndex);
             appState.quiz.currentIndex = index;
+            renderCurrentQuizQuestion();
+        }
+
+        function toggleMarkForReview(andGoNext = false) {
+            const qObj = appState.quiz;
+            if (qObj.isFinished) return;
+            const i = qObj.currentIndex;
+            if (andGoNext) {
+                qObj.markedForReview.add(i);
+                if (i < qObj.questions.length - 1) {
+                    showToast(`Question ${i + 1} marked for review`, 'info');
+                    navigateQuizQuestion(1);
+                } else {
+                    showToast(`Question ${i + 1} marked for review`, 'info');
+                    renderCurrentQuizQuestion();
+                }
+                return;
+            }
+            if (qObj.markedForReview.has(i)) qObj.markedForReview.delete(i);
+            else qObj.markedForReview.add(i);
             renderCurrentQuizQuestion();
         }
 
         function renderQuizPalette() {
             const qObj = appState.quiz;
             const answeredCount = Object.keys(qObj.userAnswers).length;
-            document.getElementById('paletteAnsweredCount').textContent = `${answeredCount} / ${qObj.questions.length} Answered`;
+            const markedCount = qObj.markedForReview.size;
+            document.getElementById('paletteAnsweredCount').textContent =
+                `${answeredCount} / ${qObj.questions.length} Answered` + (markedCount ? ` • ${markedCount} Marked` : '');
 
             const grid = document.getElementById('quizPaletteGrid');
             grid.innerHTML = qObj.questions.map((q, idx) => {
                 const chosen = qObj.userAnswers[idx];
                 const isCurrent = idx === qObj.currentIndex;
+                const isMarked = qObj.markedForReview.has(idx);
+                const isSkipped = chosen === undefined && qObj.visited.has(idx);
                 let btnColor = "bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300";
 
                 if (chosen !== undefined) {
@@ -2742,18 +2971,36 @@ if __name__ == "__main__":
                     } else {
                         btnColor = "bg-emerald-600 text-white font-bold";
                     }
+                } else if (isMarked) {
+                    btnColor = "bg-fuchsia-500 text-white font-bold";
+                } else if (isSkipped) {
+                    btnColor = "bg-yellow-400 text-slate-900 font-bold";
                 }
 
                 const ringStyle = isCurrent ? "ring-2 ring-indigo-600 dark:ring-indigo-400 font-extrabold scale-105" : "";
+                const flag = isMarked
+                    ? `<span class="absolute -top-1.5 -right-1.5 w-4 h-4 rounded-full bg-fuchsia-700 text-white flex items-center justify-center border border-white dark:border-slate-900"><i class="fa-solid fa-flag text-[7px]"></i></span>`
+                    : '';
 
                 return `
-                <button onclick="jumpToQuizQuestion(${idx})" class="h-9 rounded-xl text-xs transition-all ${btnColor} ${ringStyle}">
-                    ${idx + 1}
+                <button onclick="jumpToQuizQuestion(${idx})" class="relative h-9 rounded-xl text-xs transition-all ${btnColor} ${ringStyle}" title="${isMarked ? 'Marked for review' : (isSkipped ? 'Skipped' : '')}">
+                    ${idx + 1}${flag}
                 </button>`;
             }).join('');
         }
 
         function finishAndEvaluateQuiz() {
+            const preQ = appState.quiz;
+            if (!preQ.isFinished) {
+                const markedLeft = preQ.markedForReview.size;
+                const unanswered = preQ.questions.length - Object.keys(preQ.userAnswers).length;
+                if (markedLeft > 0 || unanswered > 0) {
+                    const parts = [];
+                    if (unanswered > 0) parts.push(`${unanswered} unanswered`);
+                    if (markedLeft > 0) parts.push(`${markedLeft} marked for review`);
+                    if (!confirm(`You still have ${parts.join(' and ')}.\n\nPress Cancel to go back and solve them, or OK to submit now.`)) return;
+                }
+            }
             stopQuizTimer();
             const qObj = appState.quiz;
             qObj.isFinished = true;
@@ -2816,11 +3063,13 @@ if __name__ == "__main__":
                 const isCorrect = userAns === q.correctIndex;
                 const isSkipped = userAns === undefined;
                 const isBookmarked = appState.bookmarkedIds.has(q.id);
+                const isMarked = qObj.markedForReview && qObj.markedForReview.has(idx);
+                const markedBadge = isMarked ? `<span class="px-2.5 py-1 rounded-lg bg-fuchsia-100 text-fuchsia-800 dark:bg-fuchsia-950 dark:text-fuchsia-300 text-xs font-bold"><i class="fa-solid fa-flag mr-1"></i>Marked</span>` : '';
 
                 const statusBadge = isCorrect
                     ? `<span class="px-2.5 py-1 rounded-lg bg-emerald-100 text-emerald-800 dark:bg-emerald-950 dark:text-emerald-300 text-xs font-bold"><i class="fa-solid fa-check mr-1"></i>Correct</span>`
                     : isSkipped
-                        ? `<span class="px-2.5 py-1 rounded-lg bg-amber-100 text-amber-800 dark:bg-amber-950 dark:text-amber-300 text-xs font-bold">Skipped</span>`
+                        ? `<span class="px-2.5 py-1 rounded-lg bg-yellow-100 text-yellow-800 dark:bg-yellow-950 dark:text-yellow-300 text-xs font-bold">Skipped</span>`
                         : `<span class="px-2.5 py-1 rounded-lg bg-rose-100 text-rose-800 dark:bg-rose-950 dark:text-rose-300 text-xs font-bold"><i class="fa-solid fa-xmark mr-1"></i>Incorrect</span>`;
 
                 // Prominent Save button (especially highlighted on wrong/skipped questions)
@@ -2839,7 +3088,7 @@ if __name__ == "__main__":
                                 <i class="${isBookmarked ? 'fa-solid' : 'fa-regular'} fa-bookmark"></i>
                                 <span>${isBookmarked ? 'Saved' : (!isCorrect ? 'Save Mistake' : 'Save')}</span>
                             </button>
-                            ${statusBadge}
+                            ${markedBadge}${statusBadge}
                         </div>
                     </div>
                     <h5 class="font-bold text-sm sm:text-base">${q.question}</h5>
@@ -2848,6 +3097,7 @@ if __name__ == "__main__":
                         <div class="text-emerald-600 dark:text-emerald-400 font-bold">Correct Answer: Option ${optionLetters[q.correctIndex]} (${q.options[q.correctIndex]})</div>
                     </div>
                     ${q.explanation ? `<p class="text-xs text-slate-600 dark:text-slate-400 bg-slate-50 dark:bg-slate-800/60 p-3 rounded-xl">${q.explanation}</p>` : ''}
+                    ${noteBlockHTML(q.id, 'score')}
                 </div>`;
             }).join('');
         }
@@ -2980,6 +3230,7 @@ if __name__ == "__main__":
                         Answer: Option ${optionLabels[q.correctIndex]} — ${q.options[q.correctIndex]}
                     </div>
                     ${q.explanation ? `<p class="text-xs text-slate-500 dark:text-slate-400">${q.explanation}</p>` : ''}
+                    ${noteBlockHTML(q.id, 'bm')}
                 </div>
             `).join('');
         }
@@ -3018,6 +3269,7 @@ if __name__ == "__main__":
                 else if (key === '2') selectQuizOption(1);
                 else if (key === 'C' || key === '3') selectQuizOption(2);
                 else if (key === 'D' || key === '4') selectQuizOption(3);
+                else if (key === 'M' && !e.ctrlKey && !e.metaKey) toggleMarkForReview(false);
                 else if (e.key === 'ArrowRight' || e.key === 'Enter') navigateQuizQuestion(1);
                 else if (e.key === 'ArrowLeft') navigateQuizQuestion(-1);
             });
@@ -3047,20 +3299,22 @@ if __name__ == "__main__":
         }
 
         function switchUploadTab(tab) {
-            const tabs = ['excel', 'manual', 'cloud', 'python', 'manage'];
+            const tabs = ['excel', 'manual', 'cloud', 'python', 'manage', 'delete'];
             const btnIds = {
                 excel: 'tabBtnExcel',
                 manual: 'tabBtnManual',
                 cloud: 'tabBtnCloud',
                 python: 'tabBtnPython',
-                manage: 'tabBtnManage'
+                manage: 'tabBtnManage',
+                delete: 'tabBtnDelete'
             };
             const panelIds = {
                 excel: 'uploadTabExcel',
                 manual: 'uploadTabManual',
                 cloud: 'uploadTabCloud',
                 python: 'uploadTabPython',
-                manage: 'uploadTabManage'
+                manage: 'uploadTabManage',
+                delete: 'uploadTabDelete'
             };
 
             if (tab === 'cloud') {
@@ -3070,6 +3324,8 @@ if __name__ == "__main__":
                 if (keyIn) keyIn.value = appState.cloudConfig.apiKey || '';
             } else if (tab === 'python') {
                 renderPythonScriptWithCloudUrl();
+            } else if (tab === 'delete') {
+                initDeleteTab();
             }
 
             tabs.forEach(t => {
@@ -3083,6 +3339,354 @@ if __name__ == "__main__":
                     panel.classList.add('hidden');
                 }
             });
+        }
+
+        // ============================================================================
+        // 🗑️ DELETE QUESTIONS BY YEAR / MONTH / DAY  (with warning + backup option)
+        // ============================================================================
+        let pendingDelete = null;
+
+        function escapeHtml(s) {
+            return String(s == null ? '' : s)
+                .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+        }
+
+        function initDeleteTab() {
+            const yearSel = document.getElementById('delYear');
+            const monthSel = document.getElementById('delMonth');
+            const prevYear = yearSel.value;
+            const years = new Set(YEARS_LIST);
+            appState.questions.forEach(q => years.add(q.year));
+            yearSel.innerHTML = Array.from(years).sort((a, b) => a - b)
+                .map(y => `<option value="${y}">${y}</option>`).join('');
+            yearSel.value = prevYear && years.has(parseInt(prevYear, 10)) ? prevYear : String(appState.selectedYear);
+            if (!yearSel.value) yearSel.value = String(YEARS_LIST[0]);
+
+            const prevMonth = monthSel.value || 'all';
+            monthSel.innerHTML = `<option value="all">All months</option>` +
+                MONTHS_LIST.map((m, i) => `<option value="${i}">${m}</option>`).join('');
+            monthSel.value = prevMonth;
+            onDeleteMonthChange();
+        }
+
+        function onDeleteMonthChange() {
+            const monthSel = document.getElementById('delMonth');
+            const daySel = document.getElementById('delDay');
+            if (monthSel.value === 'all') {
+                daySel.innerHTML = `<option value="all">All days</option>`;
+                daySel.disabled = true;
+            } else {
+                const prevDay = daySel.value;
+                const maxDay = DAYS_IN_MONTH[parseInt(monthSel.value, 10)];
+                let opts = `<option value="all">All days</option>`;
+                for (let d = 1; d <= maxDay; d++) opts += `<option value="${d}">${d}</option>`;
+                daySel.innerHTML = opts;
+                daySel.value = prevDay && (prevDay === 'all' || parseInt(prevDay, 10) <= maxDay) ? prevDay : 'all';
+                daySel.disabled = false;
+            }
+            onDeleteScopeChange();
+        }
+
+        function getDeleteScope() {
+            const y = parseInt(document.getElementById('delYear').value, 10);
+            const mv = document.getElementById('delMonth').value;
+            const dv = document.getElementById('delDay').value;
+            const m = mv === 'all' ? null : parseInt(mv, 10);
+            const d = (m === null || dv === 'all') ? null : parseInt(dv, 10);
+            return { y, m, d };
+        }
+
+        function describeDeleteScope(sc) {
+            if (sc.m === null) return `All of ${sc.y}`;
+            if (sc.d === null) return `All of ${MONTHS_LIST[sc.m]} ${sc.y}`;
+            return `${sc.d} ${MONTHS_LIST[sc.m]} ${sc.y}`;
+        }
+
+        function getDeleteMatches(sc) {
+            return appState.questions
+                .filter(q => q.year === sc.y && (sc.m === null || q.month === sc.m) && (sc.d === null || q.day === sc.d))
+                .sort((a, b) => (a.month - b.month) || (a.day - b.day));
+        }
+
+        function onDeleteScopeChange() {
+            const sc = getDeleteScope();
+            const list = getDeleteMatches(sc);
+            const box = document.getElementById('delPreviewBox');
+            const btn = document.getElementById('delReviewBtn');
+
+            if (list.length === 0) {
+                box.innerHTML = `<div class="text-xs text-slate-500 dark:text-slate-400"><i class="fa-regular fa-folder-open mr-1.5"></i>No questions found for <strong>${escapeHtml(describeDeleteScope(sc))}</strong>.</div>`;
+                btn.disabled = true;
+                return;
+            }
+
+            const groups = {};
+            list.forEach(q => {
+                const label = sc.m === null ? MONTHS_LIST[q.month].slice(0, 3) : `Day ${q.day}`;
+                groups[label] = (groups[label] || 0) + 1;
+            });
+            const chips = Object.entries(groups).map(([k, v]) =>
+                `<span class="px-2 py-0.5 rounded-lg bg-slate-200 dark:bg-slate-700 text-[11px] font-bold">${k}: ${v}</span>`).join(' ');
+
+            box.innerHTML = `
+                <div class="text-xs sm:text-sm"><strong class="text-rose-600 dark:text-rose-400">${list.length}</strong> question${list.length === 1 ? '' : 's'} match
+                    <strong>${escapeHtml(describeDeleteScope(sc))}</strong></div>
+                <div class="flex flex-wrap gap-1.5">${chips}</div>`;
+            btn.disabled = false;
+        }
+
+        function openDeleteConfirm() {
+            const sc = getDeleteScope();
+            const list = getDeleteMatches(sc);
+            if (list.length === 0) {
+                showToast('No questions match this selection.', 'warning');
+                return;
+            }
+            pendingDelete = { scope: sc, list, backedUp: false };
+
+            const days = new Set(list.map(q => `${q.month}-${q.day}`)).size;
+            const bm = list.filter(q => appState.bookmarkedIds.has(q.id)).length;
+            const noted = list.filter(q => appState.notes[q.id]).length;
+            const cats = {};
+            list.forEach(q => { cats[q.category] = (cats[q.category] || 0) + 1; });
+            const catChips = Object.entries(cats).map(([k, v]) =>
+                `<span class="px-2 py-0.5 rounded-lg bg-violet-100 dark:bg-violet-950/70 text-violet-700 dark:text-violet-300 text-[11px] font-bold">${escapeHtml(k)}: ${v}</span>`).join(' ');
+
+            const rows = list.map((q, i) => `
+                <div class="px-3 py-2 rounded-xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700 text-xs">
+                    <div class="font-bold text-slate-500 dark:text-slate-400">${i + 1}. ${q.day} ${MONTHS_LIST[q.month].slice(0, 3)} ${q.year} &bull; ${escapeHtml(q.category)}
+                        ${appState.bookmarkedIds.has(q.id) ? '<i class="fa-solid fa-bookmark text-amber-500 ml-1" title="Bookmarked"></i>' : ''}
+                        ${appState.notes[q.id] ? '<i class="fa-solid fa-note-sticky text-yellow-500 ml-1" title="Has your note"></i>' : ''}
+                    </div>
+                    <div class="text-slate-800 dark:text-slate-200 mt-0.5">${escapeHtml(q.question)}</div>
+                </div>`).join('');
+
+            document.getElementById('deleteConfirmBody').innerHTML = `
+                <div class="p-4 rounded-2xl bg-rose-50 dark:bg-rose-950/30 border border-rose-200 dark:border-rose-900/60">
+                    <div class="text-[11px] font-bold uppercase tracking-wide text-rose-500">You are about to permanently delete</div>
+                    <div class="text-lg font-black text-slate-900 dark:text-white">${escapeHtml(describeDeleteScope(pendingDelete.scope))}</div>
+                </div>
+
+                <div class="grid grid-cols-2 sm:grid-cols-4 gap-2.5 text-center">
+                    <div class="p-3 rounded-xl bg-slate-100 dark:bg-slate-800"><div class="text-xl font-black text-rose-600 dark:text-rose-400">${list.length}</div><div class="text-[11px] font-semibold text-slate-500">Questions</div></div>
+                    <div class="p-3 rounded-xl bg-slate-100 dark:bg-slate-800"><div class="text-xl font-black">${days}</div><div class="text-[11px] font-semibold text-slate-500">Days affected</div></div>
+                    <div class="p-3 rounded-xl bg-slate-100 dark:bg-slate-800"><div class="text-xl font-black text-amber-600 dark:text-amber-400">${bm}</div><div class="text-[11px] font-semibold text-slate-500">Bookmarked</div></div>
+                    <div class="p-3 rounded-xl bg-slate-100 dark:bg-slate-800"><div class="text-xl font-black text-yellow-600 dark:text-yellow-400">${noted}</div><div class="text-[11px] font-semibold text-slate-500">With your notes</div></div>
+                </div>
+
+                <div class="space-y-1.5">
+                    <div class="text-xs font-bold text-slate-500 dark:text-slate-400">Categories affected</div>
+                    <div class="flex flex-wrap gap-1.5">${catChips}</div>
+                </div>
+
+                <div class="space-y-1.5">
+                    <div class="text-xs font-bold text-slate-500 dark:text-slate-400">All questions that will be deleted</div>
+                    <div class="max-h-52 overflow-y-auto space-y-1.5 pr-1">${rows}</div>
+                </div>
+
+                <div class="p-4 rounded-2xl bg-emerald-50 dark:bg-emerald-950/25 border border-emerald-200 dark:border-emerald-900/60 space-y-2.5">
+                    <div class="text-xs font-extrabold text-emerald-700 dark:text-emerald-400 flex items-center gap-2"><i class="fa-solid fa-shield-heart"></i> Back up these questions first (recommended)</div>
+                    <p class="text-[11px] text-slate-600 dark:text-slate-400">The CSV can be re-uploaded later from the Excel / CSV tab. The JSON backup also keeps your personal notes.</p>
+                    <div class="flex flex-wrap gap-2">
+                        <button onclick="downloadPendingBackup('csv')" class="px-3.5 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs shadow flex items-center gap-1.5"><i class="fa-solid fa-file-csv"></i> Backup as CSV</button>
+                        <button onclick="downloadPendingBackup('json')" class="px-3.5 py-2 rounded-xl bg-slate-700 hover:bg-slate-600 text-white font-bold text-xs shadow flex items-center gap-1.5"><i class="fa-solid fa-file-code"></i> Backup as JSON (with notes)</button>
+                    </div>
+                    <div id="delBackupStatus" class="text-[11px] font-semibold text-slate-500 dark:text-slate-400">No backup downloaded yet.</div>
+                </div>
+
+                <div class="space-y-1.5">
+                    <label class="text-xs font-bold text-slate-600 dark:text-slate-300">Type <code class="font-mono px-1 rounded bg-slate-200 dark:bg-slate-700">DELETE</code> to unlock the delete buttons</label>
+                    <input id="delConfirmInput" oninput="updateDeleteConfirmButtons()" autocomplete="off" placeholder="DELETE" class="w-full px-3 py-2 rounded-xl bg-slate-100 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 text-sm font-mono font-bold tracking-widest">
+                </div>
+
+                <div class="flex flex-col sm:flex-row gap-2.5 pt-1">
+                    <button onclick="closeDeleteConfirm()" class="px-4 py-2.5 rounded-xl bg-slate-200 hover:bg-slate-300 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-800 dark:text-slate-200 font-bold text-xs">Cancel &mdash; keep everything</button>
+                    <button id="delBackupAndDeleteBtn" onclick="executeDelete(true)" disabled class="flex-1 px-4 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs shadow disabled:opacity-40 disabled:cursor-not-allowed"><i class="fa-solid fa-download mr-1"></i> Backup (CSV) &amp; Delete</button>
+                    <button id="delNoBackupBtn" onclick="executeDelete(false)" disabled class="flex-1 px-4 py-2.5 rounded-xl bg-rose-600 hover:bg-rose-500 text-white font-bold text-xs shadow disabled:opacity-40 disabled:cursor-not-allowed"><i class="fa-solid fa-trash-can mr-1"></i> Delete without backup</button>
+                </div>`;
+            document.getElementById('deleteConfirmModal').classList.remove('hidden');
+        }
+
+        function closeDeleteConfirm() {
+            document.getElementById('deleteConfirmModal').classList.add('hidden');
+            pendingDelete = null;
+        }
+
+        function updateDeleteConfirmButtons() {
+            const ok = document.getElementById('delConfirmInput').value.trim() === 'DELETE';
+            document.getElementById('delBackupAndDeleteBtn').disabled = !ok;
+            document.getElementById('delNoBackupBtn').disabled = !ok;
+        }
+
+        function buildCSVFromList(list) {
+            const optionLetters = ['A', 'B', 'C', 'D'];
+            const header = "year,month,day,category,question,option_a,option_b,option_c,option_d,correct_option,explanation";
+            const esc = (str) => `"${String(str || '').replace(/"/g, '""')}"`;
+            const rows = list.map(q => [
+                q.year, MONTHS_LIST[q.month], q.day, esc(q.category), esc(q.question),
+                esc(q.options[0]), esc(q.options[1]), esc(q.options[2]), esc(q.options[3]),
+                optionLetters[q.correctIndex] || 'A', esc(q.explanation)
+            ].join(','));
+            return [header, ...rows].join('\n');
+        }
+
+        function triggerDownload(content, mime, filename) {
+            const blob = new Blob([content], { type: mime });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = filename;
+            a.click();
+            URL.revokeObjectURL(url);
+        }
+
+        function pendingBackupBaseName() {
+            const sc = pendingDelete.scope;
+            let name = `ca_backup_${sc.y}`;
+            if (sc.m !== null) name += `_${MONTHS_LIST[sc.m]}`;
+            if (sc.d !== null) name += `_day${sc.d}`;
+            return `${name}_${new Date().toISOString().slice(0, 10)}`;
+        }
+
+        function downloadPendingBackup(kind) {
+            if (!pendingDelete) return;
+            const base = pendingBackupBaseName();
+            if (kind === 'csv') {
+                triggerDownload(buildCSVFromList(pendingDelete.list), 'text/csv;charset=utf-8;', `${base}.csv`);
+            } else {
+                const withNotes = pendingDelete.list.map(q => appState.notes[q.id] ? { ...q, note: appState.notes[q.id].text } : q);
+                triggerDownload(JSON.stringify(withNotes, null, 2), 'application/json', `${base}.json`);
+            }
+            pendingDelete.backedUp = true;
+            const st = document.getElementById('delBackupStatus');
+            if (st) {
+                st.className = 'text-[11px] font-bold text-emerald-600 dark:text-emerald-400';
+                st.innerHTML = `<i class="fa-solid fa-circle-check mr-1"></i> ${kind.toUpperCase()} backup of ${pendingDelete.list.length} questions downloaded.`;
+            }
+        }
+
+        async function executeDelete(withBackup) {
+            if (!pendingDelete) return;
+            if (document.getElementById('delConfirmInput').value.trim() !== 'DELETE') return;
+            const { list, scope } = pendingDelete;
+
+            if (withBackup) {
+                const base = pendingBackupBaseName();
+                triggerDownload(buildCSVFromList(list), 'text/csv;charset=utf-8;', `${base}.csv`);
+                if (list.some(q => appState.notes[q.id])) {
+                    const withNotes = list.map(q => appState.notes[q.id] ? { ...q, note: appState.notes[q.id].text } : q);
+                    triggerDownload(JSON.stringify(withNotes, null, 2), 'application/json', `${base}.json`);
+                }
+            }
+
+            const idSet = new Set(list.map(q => q.id));
+            list.forEach(q => appState.deletedSigs.add(qSig(q)));
+            appState.questions = appState.questions.filter(q => !idSet.has(q.id));
+            idSet.forEach(id => {
+                appState.bookmarkedIds.delete(id);
+                delete appState.notes[id];
+                appState.revealedAnswerIds.delete(id);
+            });
+
+            // Clear saved best scores that belonged to the deleted range
+            Object.keys(appState.dayBestScores).forEach(key => {
+                const [ky, km, kd] = key.split('-');
+                if (parseInt(ky, 10) !== scope.y) return;
+                if (scope.m === null) { delete appState.dayBestScores[key]; return; }
+                if (parseInt(km, 10) !== scope.m) return;
+                if (scope.d === null) { delete appState.dayBestScores[key]; return; }
+                if (parseInt(kd, 10) === scope.d) delete appState.dayBestScores[key];
+            });
+
+            savePersistentData();
+            updateGlobalHeaderStats();
+            refreshActiveViewAfterDataChange();
+
+            const count = list.length;
+            const label = describeDeleteScope(scope);
+            closeDeleteConfirm();
+            onDeleteScopeChange();
+            showToast(`Deleted ${count} question${count === 1 ? '' : 's'} from ${label}${withBackup ? ' (backup downloaded)' : ''}.`, 'success');
+
+            if (appState.cloudConfig.url) {
+                await pushQuestionsToCloud(true);
+            }
+        }
+
+        // ============================================================================
+        // 📝 PERSONAL NOTES (shown below every explanation)
+        // ============================================================================
+        function noteBlockHTML(qId, ctx) {
+            const key = `${ctx}__${qId}`;
+            const saved = appState.notes[qId];
+            const editing = !saved || appState.noteEditing.has(key);
+            let inner;
+            if (editing) {
+                inner = `
+                    <div class="flex items-center gap-1.5 text-[11px] font-bold uppercase tracking-wider text-yellow-700 dark:text-yellow-400"><i class="fa-solid fa-pen-to-square"></i> My Notes</div>
+                    <textarea id="noteTa_${key}" rows="3" placeholder="Write your own notes, memory tricks or extra facts for revision..." class="w-full mt-1.5 px-3 py-2 rounded-xl bg-white dark:bg-slate-900 border border-yellow-300/80 dark:border-yellow-700/60 text-xs sm:text-sm text-slate-800 dark:text-slate-100 focus:outline-none focus:ring-2 focus:ring-yellow-400">${escapeHtml(saved ? saved.text : '')}</textarea>
+                    <div class="flex flex-wrap items-center gap-2 mt-2">
+                        <button onclick="saveNote('${qId}','${ctx}')" class="px-3.5 py-1.5 rounded-lg bg-yellow-500 hover:bg-yellow-400 text-slate-950 font-bold text-xs flex items-center gap-1.5"><i class="fa-solid fa-floppy-disk"></i> Save Note</button>
+                        ${saved ? `<button onclick="cancelNoteEdit('${qId}','${ctx}')" class="px-3 py-1.5 rounded-lg bg-slate-200 hover:bg-slate-300 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 font-semibold text-xs">Cancel</button>` : ''}
+                    </div>`;
+            } else {
+                const when = saved.updated ? new Date(saved.updated).toLocaleDateString(undefined, { day: 'numeric', month: 'short', year: 'numeric' }) : '';
+                inner = `
+                    <div class="flex items-center justify-between gap-2">
+                        <div class="flex items-center gap-1.5 text-[11px] font-bold uppercase tracking-wider text-yellow-700 dark:text-yellow-400"><i class="fa-solid fa-note-sticky"></i> My Notes${when ? ` <span class="normal-case font-medium text-yellow-700/70 dark:text-yellow-400/70">&bull; ${when}</span>` : ''}</div>
+                        <div class="flex items-center gap-1.5">
+                            <button onclick="editNote('${qId}','${ctx}')" class="px-2 py-1 rounded-lg text-[11px] font-bold text-yellow-800 dark:text-yellow-300 hover:bg-yellow-200/70 dark:hover:bg-yellow-900/40"><i class="fa-solid fa-pen mr-1"></i>Edit</button>
+                            <button onclick="deleteNote('${qId}','${ctx}')" class="px-2 py-1 rounded-lg text-[11px] font-bold text-rose-600 dark:text-rose-400 hover:bg-rose-100 dark:hover:bg-rose-950/40"><i class="fa-regular fa-trash-can mr-1"></i>Delete</button>
+                        </div>
+                    </div>
+                    <p class="note-sticky mt-1.5 text-xs sm:text-sm text-slate-800 dark:text-slate-100 leading-relaxed">${escapeHtml(saved.text)}</p>`;
+            }
+            return `<div id="noteWrap_${key}" class="mt-3 p-3.5 rounded-2xl bg-yellow-50 dark:bg-yellow-950/25 border border-yellow-200 dark:border-yellow-800/50">${inner}</div>`;
+        }
+
+        function refreshNoteBlocks(qId) {
+            document.querySelectorAll('[id^="noteWrap_"]').forEach(el => {
+                const key = el.id.slice('noteWrap_'.length);
+                const idx = key.indexOf('__');
+                if (key.slice(idx + 2) !== qId) return;
+                el.outerHTML = noteBlockHTML(qId, key.slice(0, idx));
+            });
+        }
+
+        function saveNote(qId, ctx) {
+            const ta = document.getElementById(`noteTa_${ctx}__${qId}`);
+            if (!ta) return;
+            const text = ta.value.trim();
+            appState.noteEditing.delete(`${ctx}__${qId}`);
+            if (!text) {
+                delete appState.notes[qId];
+                showToast('Empty note removed.', 'info');
+            } else {
+                appState.notes[qId] = { text, updated: Date.now() };
+                showToast('Note saved!', 'success');
+            }
+            savePersistentData();
+            refreshNoteBlocks(qId);
+        }
+
+        function editNote(qId, ctx) {
+            appState.noteEditing.add(`${ctx}__${qId}`);
+            refreshNoteBlocks(qId);
+        }
+
+        function cancelNoteEdit(qId, ctx) {
+            appState.noteEditing.delete(`${ctx}__${qId}`);
+            refreshNoteBlocks(qId);
+        }
+
+        function deleteNote(qId, ctx) {
+            if (!confirm('Delete this note?')) return;
+            delete appState.notes[qId];
+            appState.noteEditing.delete(`${ctx}__${qId}`);
+            savePersistentData();
+            refreshNoteBlocks(qId);
+            showToast('Note deleted.', 'info');
         }
 
         // Parse Month string or number into 0..11
@@ -3182,6 +3786,10 @@ if __name__ == "__main__":
                         explanation
                     };
                     appState.questions.push(newQ);
+                    appState.deletedSigs.delete(sig);
+                    if (item.note && String(item.note).trim()) {
+                        appState.notes[newQ.id] = { text: String(item.note).trim(), updated: Date.now() };
+                    }
                     existingSignatures.add(sig);
                     lastAddedItem = newQ;
                     added++;
@@ -3206,6 +3814,8 @@ if __name__ == "__main__":
                 renderMonthsView(appState.selectedYear);
             } else if (appState.currentView === 'month-hub') {
                 switchMonthSubMode(appState.monthSubMode, true);
+            } else if (appState.currentView === 'bookmarks') {
+                renderBookmarksView();
             }
         }
 
@@ -3377,7 +3987,8 @@ if __name__ == "__main__":
         }
 
         function exportDatabaseAsJSON() {
-            const blob = new Blob([JSON.stringify(appState.questions, null, 2)], { type: 'application/json' });
+            const withNotes = appState.questions.map(q => appState.notes[q.id] ? { ...q, note: appState.notes[q.id].text } : q);
+            const blob = new Blob([JSON.stringify(withNotes, null, 2)], { type: 'application/json' });
             const url = URL.createObjectURL(blob);
             const a = document.createElement('a');
             a.href = url;
